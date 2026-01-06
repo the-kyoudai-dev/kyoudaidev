@@ -11,33 +11,23 @@
     {
       "id": "welcome-to-respengr",
       "filename": "Welcome to RespEngr.md",
-      "title": "Welcome to the Response Engineering (RespEngr) portal",
+      "title": "Welcome to RespEngr",
       "content": "![[ouchie/City of Interaction.jpg]]\n# Welcome to the KYOUDAI Civilization RespEngr Portal",
-      "created": "2026-01-06T22:48:00.000Z",
-      "modified": "2026-01-06T22:48:00.000Z",
+      "created": "2026-01-06T22:42:09.786Z",
+      "modified": "2026-01-06T22:48:59.501Z",
       "author": "Amukat",
       "wordCount": 11,
       "path": "/Welcome to RespEngr.md",
-      "tags": [
-        "respengr"
-      ],
+      "tags": [],
       "status": "published"
     }
   ],
-  "folders": [
-    {
-      "id": "folder-2026-01",
-      "name": "2026-01",
-      "path": "/2026-01",
-      "children": [
-        "welcome-to-respengr"
-      ]
-    }
-  ],
+  "folders": [],
   "meta": {
-    "generated": "2026-01-06T23:21:21.316Z",
+    "generated": "2026-01-06T23:38:36.840Z",
     "totalArticles": 1,
     "totalImages": 1,
-    "totalFolders": 1
+    "totalFolders": 0,
+    "vaultPath": "C:\\Users\\ai2Aibou\\Desktop\\KYOUDAI.dev_BuildPrint.No.05\\kyoudaidev\\public\\respengr"
   }
 }

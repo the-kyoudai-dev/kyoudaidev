@@ -1,7 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { marked } from 'marked';
 import type { Article } from '@/lib/respengr-data';
+
+// Configure marked for better rendering
+marked.setOptions({
+  breaks: true,
+  gfm: true
+});
 
 interface DraggableArticleModalProps {
   article: Article;
@@ -9,7 +16,7 @@ interface DraggableArticleModalProps {
   initialPosition?: { x: number; y: number };
   zIndex: number;
   onBringToFront: () => void;
-  accentColor: string; // NEW: portal-specific color
+  accentColor: string;
 }
 
 export default function DraggableArticleModal({
@@ -23,6 +30,9 @@ export default function DraggableArticleModal({
   const [position, setPosition] = useState(initialPosition);
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{ startX: number; startY: number } | null>(null);
+  
+  // Render markdown to HTML
+  const renderedContent = marked(article.content);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('.modal-toolbar')) {
@@ -39,7 +49,7 @@ export default function DraggableArticleModal({
     const handleMouseMove = (e: MouseEvent) => {
       if (isDragging && dragRef.current) {
         setPosition({
-          x: Math.max(0, Math.min(window.innerWidth - 600, e.clientX - dragRef.current.startX)),
+          x: Math.max(0, Math.min(window.innerWidth - 700, e.clientX - dragRef.current.startX)),
           y: Math.max(0, Math.min(window.innerHeight - 100, e.clientY - dragRef.current.startY))
         });
       }
@@ -67,9 +77,9 @@ export default function DraggableArticleModal({
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
-        width: '600px',
+        width: '700px',
         maxWidth: 'calc(100vw - 40px)',
-        maxHeight: '80vh',
+        maxHeight: '85vh',
         zIndex,
         backgroundColor: '#0a0a0a',
         border: `2px solid ${accentColor}`,
@@ -84,23 +94,12 @@ export default function DraggableArticleModal({
         style={{ backgroundColor: accentColor }}
       >
         <div className="flex items-center gap-2 text-xs font-mono text-black font-bold">
-          <button className="hover:text-neutral-800 transition-colors">←</button>
-          <button className="hover:text-neutral-800 transition-colors">→</button>
-          <span className="px-2 py-1 bg-black/20 rounded text-black">
-            /respengr{article.path}
+          <span className="px-2 py-1 bg-black/20 rounded text-black truncate max-w-md">
+            {article.path}
           </span>
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="text-black hover:text-neutral-800 transition-colors" title="Download">
-            ⬇️
-          </button>
-          <button className="text-black hover:text-neutral-800 transition-colors" title="Email">
-            ✉️
-          </button>
-          <button className="text-black hover:text-neutral-800 transition-colors" title="Comment">
-            💬
-          </button>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -114,31 +113,60 @@ export default function DraggableArticleModal({
       </div>
 
       {/* Content */}
-      <div className="p-6 overflow-auto" style={{ maxHeight: 'calc(80vh - 48px)' }}>
-        <h2 className="text-2xl font-mono font-bold mb-3" style={{ color: accentColor }}>
-          {article.title}
-        </h2>
-        <div className="text-sm font-mono mb-6" style={{ color: `${accentColor}80` }}>
-          {article.wordCount} words · {new Date(article.created).toLocaleDateString()}
+      <div className="overflow-auto" style={{ maxHeight: 'calc(85vh - 48px)' }}>
+        {/* Article Header */}
+        <div className="p-6 border-b" style={{ borderColor: `${accentColor}40` }}>
+          <h2 className="text-2xl font-mono font-bold mb-3" style={{ color: accentColor }}>
+            {article.title}
+          </h2>
+          <div className="text-sm font-mono flex gap-4" style={{ color: `${accentColor}80` }}>
+            <span>{article.wordCount} words</span>
+            <span>·</span>
+            <span>{new Date(article.created).toLocaleDateString()}</span>
+            {article.author && (
+              <>
+                <span>·</span>
+                <span>by {article.author}</span>
+              </>
+            )}
+          </div>
         </div>
-        <div className="prose prose-invert max-w-none font-mono text-neutral-200 leading-relaxed">
-          <p className="whitespace-pre-wrap">{article.content}</p>
+
+        {/* Article Content with Markdown */}
+        <div className="p-6">
+          <div 
+            className="prose prose-invert max-w-none font-mono"
+            style={{
+              '--tw-prose-body': '#e5e5e5',
+              '--tw-prose-headings': accentColor,
+              '--tw-prose-links': accentColor,
+              '--tw-prose-bold': '#ffffff',
+              '--tw-prose-code': accentColor
+            } as React.CSSProperties}
+            dangerouslySetInnerHTML={{ __html: renderedContent }}
+          />
         </div>
-        <div className="mt-8 pt-4 border-t flex flex-wrap gap-2" style={{ borderColor: `${accentColor}40` }}>
-          {article.tags.map(tag => (
-            <span 
-              key={tag}
-              className="text-xs font-mono px-3 py-1 rounded border"
-              style={{ 
-                backgroundColor: `${accentColor}10`,
-                borderColor: `${accentColor}40`,
-                color: accentColor
-              }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+
+        {/* Tags */}
+        {article.tags && article.tags.length > 0 && (
+          <div className="px-6 pb-6">
+            <div className="pt-4 border-t flex flex-wrap gap-2" style={{ borderColor: `${accentColor}40` }}>
+              {article.tags.map((tag: string) => (
+                <span 
+                  key={tag}
+                  className="text-xs font-mono px-3 py-1 rounded border"
+                  style={{ 
+                    backgroundColor: `${accentColor}10`,
+                    borderColor: `${accentColor}40`,
+                    color: accentColor
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

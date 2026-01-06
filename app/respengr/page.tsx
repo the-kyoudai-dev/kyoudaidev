@@ -50,6 +50,14 @@ export default function RespEngrPage() {
       });
   }, []);
 
+  // Start with first image immediately on load
+  useEffect(() => {
+    if (ouchieImages.length > 0 && currentImageIndex === 0) {
+      setCurrentImageIndex(0);
+      setImageHistory([0]);
+    }
+  }, [ouchieImages]);
+
   // Update time on client only
   useEffect(() => {
     const updateTime = () => {
@@ -62,16 +70,22 @@ export default function RespEngrPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Randomizer logic
+  // Randomizer logic - FIXED
   useEffect(() => {
-    if (!isRandomizing) return;
+    if (!isRandomizing || ouchieImages.length === 0) return;
 
     const interval = setInterval(() => {
       const nextIndex = Math.floor(Math.random() * ouchieImages.length);
       setCurrentImageIndex(nextIndex);
-      setImageHistory(prev => [...prev.slice(0, historyPointer + 1), nextIndex]);
+      
+      // Update history for back/forward navigation
+      setImageHistory(prev => {
+        const newHistory = prev.slice(0, historyPointer + 1);
+        newHistory.push(nextIndex);
+        return newHistory;
+      });
       setHistoryPointer(prev => prev + 1);
-    }, 3000);
+    }, 3000); // Change every 3 seconds
 
     return () => clearInterval(interval);
   }, [isRandomizing, ouchieImages.length, historyPointer]);
