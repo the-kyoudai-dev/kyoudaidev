@@ -29,10 +29,41 @@ export default function DraggableArticleModal({
 }: DraggableArticleModalProps) {
   const [position, setPosition] = useState(initialPosition);
   const [isDragging, setIsDragging] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const dragRef = useRef<{ startX: number; startY: number } | null>(null);
   
   // Render markdown to HTML
   const renderedContent = marked(article.content);
+  
+  // Check for paired image - try multiple extensions
+  const baseFilename = article.filename.replace('.md', '');
+  const possibleImages = [
+    `/respengr/ouchie/${baseFilename}.jpg`,
+    `/respengr/ouchie/${baseFilename}.jpeg`,
+    `/respengr/ouchie/${baseFilename}.png`,
+    `/respengr/ouchie/${baseFilename}.webp`
+  ];
+  const [pairedImage, setPairedImage] = useState<string | null>(null);
+
+  // Try to load paired image
+  useEffect(() => {
+    const tryLoadImage = async () => {
+      for (const imgPath of possibleImages) {
+        try {
+          const response = await fetch(imgPath, { method: 'HEAD' });
+          if (response.ok) {
+            setPairedImage(imgPath);
+            return;
+          }
+        } catch (e) {
+          // Continue to next image
+        }
+      }
+      setImageError(true);
+    };
+    
+    tryLoadImage();
+  }, [article.filename]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('.modal-toolbar')) {
@@ -132,16 +163,31 @@ export default function DraggableArticleModal({
           </div>
         </div>
 
+        {/* Paired Image (Hero) */}
+        {pairedImage && !imageError && (
+          <div className="p-6 border-b" style={{ borderColor: `${accentColor}40` }}>
+            <img 
+              src={pairedImage}
+              alt={article.title}
+              className="w-full h-auto rounded"
+              style={{ border: `1px solid ${accentColor}40` }}
+              onError={() => setImageError(true)}
+            />
+          </div>
+        )}
+
         {/* Article Content with Markdown */}
         <div className="p-6">
           <div 
-            className="prose prose-invert max-w-none font-mono"
+            className="prose prose-invert max-w-none font-mono leading-relaxed"
             style={{
               '--tw-prose-body': '#e5e5e5',
               '--tw-prose-headings': accentColor,
               '--tw-prose-links': accentColor,
               '--tw-prose-bold': '#ffffff',
-              '--tw-prose-code': accentColor
+              '--tw-prose-code': accentColor,
+              '--tw-prose-pre-bg': '#1a1a1a',
+              '--tw-prose-pre-code': '#e5e5e5'
             } as React.CSSProperties}
             dangerouslySetInnerHTML={{ __html: renderedContent }}
           />

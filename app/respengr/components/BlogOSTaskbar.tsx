@@ -11,7 +11,8 @@ interface TaskbarProps {
   canGoForward: boolean;
   viewMode: 'desktop' | 'filetree';
   onViewModeChange: (mode: 'desktop' | 'filetree') => void;
-  accentColor: string; // NEW
+  accentColor: string;
+  clickCount: number; // NEW
 }
 
 export default function BlogOSTaskbar({
@@ -23,10 +24,21 @@ export default function BlogOSTaskbar({
   canGoForward,
   viewMode,
   onViewModeChange,
-  accentColor
+  accentColor,
+  clickCount
 }: TaskbarProps) {
   const [isBlinking, setIsBlinking] = useState(false);
-  const [thoughtBubble, setThoughtBubble] = useState<null | 'ow' | 'stop' | 'perception'>(null);
+  const [thoughtBubble, setThoughtBubble] = useState<null | 'ow' | 'stop' | 'perception' | 'seriously'>(null);
+
+  // Speech bubble messages
+  const getMessage = () => {
+    if (clickCount === 0) return null;
+    if (clickCount === 1) return "OW!";
+    if (clickCount === 2) return "Dude! STOP!!";
+    return "...seriously?";
+  };
+
+  const message = getMessage();
 
   // Blink schedule (Fibonacci-ish pattern)
   useEffect(() => {
@@ -60,15 +72,7 @@ export default function BlogOSTaskbar({
   }, []);
 
   const handleOuchieClick = () => {
-    if (!isRandomizing) {
-      setThoughtBubble('ow');
-      setTimeout(() => setThoughtBubble(null), 800);
-      onToggleRandomize();
-    } else {
-      setThoughtBubble('stop');
-      setTimeout(() => setThoughtBubble(null), 1500);
-      onToggleRandomize();
-    }
+    onToggleRandomize();
   };
 
   return (
@@ -79,57 +83,61 @@ export default function BlogOSTaskbar({
         borderColor: accentColor
       }}
     >
-      {/* Left: KYOUDAI branding */}
-      <div className="font-mono text-sm text-neutral-500">
-        RespEngr v1.0
+      {/* Left: Ouchie Eye with speech bubble */}
+      <div className="relative">
+        <button
+          onClick={handleOuchieClick}
+          className="text-6xl hover:scale-110 transition-transform cursor-pointer relative"
+          title="Toggle Ouchie Eye Randomizer"
+        >
+          {isBlinking ? '😑' : '👁️'}
+        </button>
+        
+        {message && (
+          <div 
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-2 rounded-lg font-mono text-sm whitespace-nowrap animate-bounce"
+            style={{
+              backgroundColor: accentColor,
+              color: '#000',
+              fontWeight: 'bold'
+            }}
+          >
+            {message}
+            <div 
+              className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+              style={{
+                borderLeft: '8px solid transparent',
+                borderRight: '8px solid transparent',
+                borderTop: `8px solid ${accentColor}`
+              }}
+            />
+          </div>
+        )}
       </div>
 
-      {/* Center: Ouchie Eye + Invisible Nav */}
-      <div className="flex items-center gap-4 relative">
-        {/* INVISIBLE Back Button */}
+      {/* Center: Hidden navigation */}
+      <div className="flex gap-2">
         <button
           onClick={onNavigateBack}
           disabled={!canGoBack}
-          className="w-8 h-8 opacity-0 hover:opacity-20 disabled:opacity-0 transition-opacity text-neutral-400"
-          aria-label="Navigate back"
+          className="opacity-0 hover:opacity-100 transition-opacity text-2xl disabled:cursor-not-allowed"
+          style={{ color: canGoBack ? accentColor : '#666' }}
+          title="Previous background"
         >
-          ←
+          ◀
         </button>
-
-        {/* Ouchie Eye */}
-        <div className="relative">
-          <button
-            onClick={handleOuchieClick}
-            className={`text-4xl transition-transform ${isRandomizing ? 'animate-pulse' : ''}`}
-            aria-label="Toggle background randomizer"
-          >
-            {isBlinking ? '😑' : '👁️'}
-          </button>
-
-          {/* Thought Bubbles */}
-          {thoughtBubble && (
-            <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-white text-black px-4 py-2 rounded-lg text-sm font-mono whitespace-nowrap animate-bounce shadow-lg">
-              {thoughtBubble === 'ow' && 'OW!'}
-              {thoughtBubble === 'stop' && 'Dude! STOP!!'}
-              {thoughtBubble === 'perception' && 'Change your perception...'}
-              {/* Speech bubble tail */}
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-white rotate-45" />
-            </div>
-          )}
-        </div>
-
-        {/* INVISIBLE Forward Button */}
         <button
           onClick={onNavigateForward}
           disabled={!canGoForward}
-          className="w-8 h-8 opacity-0 hover:opacity-20 disabled:opacity-0 transition-opacity text-neutral-400"
-          aria-label="Navigate forward"
+          className="opacity-0 hover:opacity-100 transition-opacity text-2xl disabled:cursor-not-allowed"
+          style={{ color: canGoForward ? accentColor : '#666' }}
+          title="Next background"
         >
-          →
+          ▶
         </button>
       </div>
 
-      {/* Right: View Toggle */}
+      {/* Right: View toggles */}
       <div className="flex gap-2">
         <button
           onClick={() => onViewModeChange('desktop')}

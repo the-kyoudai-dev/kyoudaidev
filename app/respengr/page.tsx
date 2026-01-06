@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import type { Article, Folder, OuchieImage } from '@/lib/respengr-data';
 import BlogOSTaskbar from './components/BlogOSTaskbar';
 import DraggableArticleModal from './components/DraggableArticleModal';
 import DraggableFolderWindow from './components/DraggableFolderWindow';
-import type { Article, Folder, OuchieImage } from '@/lib/respengr-data';
 
-// RespEngr Portal Color: Fuchsia
 const PORTAL_COLOR = '#FF00FF';
 
 export default function RespEngrPage() {
@@ -21,8 +20,9 @@ export default function RespEngrPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageHistory, setImageHistory] = useState<number[]>([0]);
   const [historyPointer, setHistoryPointer] = useState(0);
+  const [clickCount, setClickCount] = useState(0);
 
-  // View state - START WITH DESKTOP VIEW
+  // View state
   const [viewMode, setViewMode] = useState<'desktop' | 'filetree'>('desktop');
 
   // Modal state
@@ -30,7 +30,7 @@ export default function RespEngrPage() {
   const [openFolder, setOpenFolder] = useState<Folder | null>(null);
   const [topZIndex, setTopZIndex] = useState(100);
 
-  // Add client-side time state
+  // Time state (for top bar)
   const [currentTime, setCurrentTime] = useState('--:--:--');
 
   // Fetch data on mount
@@ -43,6 +43,12 @@ export default function RespEngrPage() {
         setFolders(data.folders || []);
         setIsLoading(false);
         console.log('📊 RespEngr data loaded:', data.meta);
+        
+        // Initialize with first image
+        if (data.ouchieImages && data.ouchieImages.length > 0) {
+          setCurrentImageIndex(0);
+          setImageHistory([0]);
+        }
       })
       .catch(err => {
         console.error('Failed to load RespEngr data:', err);
@@ -50,45 +56,42 @@ export default function RespEngrPage() {
       });
   }, []);
 
-  // Start with first image immediately on load
-  useEffect(() => {
-    if (ouchieImages.length > 0 && currentImageIndex === 0) {
-      setCurrentImageIndex(0);
-      setImageHistory([0]);
-    }
-  }, [ouchieImages]);
-
-  // Update time on client only
+  // Update time display
   useEffect(() => {
     const updateTime = () => {
       setCurrentTime(new Date().toLocaleTimeString());
     };
     
-    updateTime(); // Set immediately
-    const interval = setInterval(updateTime, 1000); // Update every second
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
     
     return () => clearInterval(interval);
   }, []);
 
   // Randomizer logic - FIXED
   useEffect(() => {
-    if (!isRandomizing || ouchieImages.length === 0) return;
+    if (!isRandomizing || ouchieImages.length <= 1) return;
 
     const interval = setInterval(() => {
       const nextIndex = Math.floor(Math.random() * ouchieImages.length);
       setCurrentImageIndex(nextIndex);
       
-      // Update history for back/forward navigation
+      // Update history
       setImageHistory(prev => {
-        const newHistory = prev.slice(0, historyPointer + 1);
-        newHistory.push(nextIndex);
+        const newHistory = [...prev.slice(0, historyPointer + 1), nextIndex];
         return newHistory;
       });
       setHistoryPointer(prev => prev + 1);
-    }, 3000); // Change every 3 seconds
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [isRandomizing, ouchieImages.length, historyPointer]);
+
+  // Ouchie Eye click handler
+  const handleOuchieClick = () => {
+    setClickCount(prev => prev + 1);
+    setIsRandomizing(prev => !prev);
+  };
 
   const handleNavigateBack = () => {
     if (historyPointer > 0) {
@@ -108,13 +111,13 @@ export default function RespEngrPage() {
 
   const handleArticleClick = (article: Article) => {
     setOpenArticle(article);
-    setOpenFolder(null); // Close folder when opening article
+    setOpenFolder(null);
     setTopZIndex(prev => prev + 1);
   };
 
   const handleFolderClick = (folder: Folder) => {
     setOpenFolder(folder);
-    setOpenArticle(null); // Close article when opening folder
+    setOpenArticle(null);
     setTopZIndex(prev => prev + 1);
   };
 
@@ -125,13 +128,15 @@ export default function RespEngrPage() {
     }
   };
 
+  // Get current background image
   const currentBackground = ouchieImages[currentImageIndex]?.path || '';
 
-  // Standalone files (articles not in folders)
+  // Standalone files
   const standaloneArticles = articles.filter(
     article => !folders.some(folder => folder.children.includes(article.id))
   );
 
+  // Loading state
   if (isLoading) {
     return (
       <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center">
@@ -150,18 +155,20 @@ export default function RespEngrPage() {
       className="min-h-screen bg-neutral-950 text-white relative overflow-hidden pb-16"
       onClick={handleBackgroundClick}
     >
-      {/* Animated Background (subtle) */}
+      {/* Animated Background - FIXED */}
       <div
         className="fixed inset-0 bg-cover bg-center transition-all duration-1000"
         style={{
-          backgroundImage: `url(${currentBackground})`,
+          backgroundImage: currentBackground ? `url(${currentBackground})` : 'none',
           opacity: 0.08,
           filter: 'blur(20px)',
-          transform: 'scale(1.1)'
+          transform: 'scale(1.1)',
+          pointerEvents: 'none'
         }}
+        key={currentImageIndex} // Force re-render on image change
       />
 
-      {/* Top Bar (Linux-style) */}
+      {/* Top Bar */}
       <div 
         className="relative z-20 px-4 py-2 flex items-center justify-between font-mono text-sm"
         style={{ backgroundColor: '#1a1a1a', borderBottom: `1px solid ${PORTAL_COLOR}` }}
@@ -173,7 +180,6 @@ export default function RespEngrPage() {
         </div>
         <div className="flex items-center gap-4">
           <span className="text-4xl">👁️</span>
-          {/* Fix: suppressHydrationWarning for dynamic time */}
           <span className="text-neutral-500" suppressHydrationWarning>
             {currentTime}
           </span>
@@ -257,7 +263,6 @@ export default function RespEngrPage() {
                 );
               })}
 
-              {/* Standalone files */}
               {standaloneArticles.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-neutral-800">
                   <div className="text-xs font-mono text-neutral-600 mb-2">Root Files</div>
@@ -305,7 +310,7 @@ export default function RespEngrPage() {
       {/* Taskbar */}
       <BlogOSTaskbar
         isRandomizing={isRandomizing}
-        onToggleRandomize={() => setIsRandomizing(prev => !prev)}
+        onToggleRandomize={handleOuchieClick}
         onNavigateBack={handleNavigateBack}
         onNavigateForward={handleNavigateForward}
         canGoBack={historyPointer > 0}
@@ -313,6 +318,7 @@ export default function RespEngrPage() {
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         accentColor={PORTAL_COLOR}
+        clickCount={clickCount}
       />
     </div>
   );
