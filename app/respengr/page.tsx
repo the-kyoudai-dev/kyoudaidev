@@ -1,17 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getRespEngrData } from '@/lib/respengr-data';
 import BlogOSTaskbar from './components/BlogOSTaskbar';
 import DraggableArticleModal from './components/DraggableArticleModal';
 import DraggableFolderWindow from './components/DraggableFolderWindow';
-import type { Article, Folder } from '@/lib/respengr-data';
+import type { Article, Folder, OuchieImage } from '@/lib/respengr-data';
 
 // RespEngr Portal Color: Fuchsia
 const PORTAL_COLOR = '#FF00FF';
 
 export default function RespEngrPage() {
-  const { ouchieImages, articles, folders } = getRespEngrData();
+  // Data state
+  const [ouchieImages, setOuchieImages] = useState<OuchieImage[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [folders, setFolders] = useState<Folder[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   // Randomizer state
   const [isRandomizing, setIsRandomizing] = useState(false);
@@ -29,6 +32,23 @@ export default function RespEngrPage() {
 
   // Add client-side time state
   const [currentTime, setCurrentTime] = useState('--:--:--');
+
+  // Fetch data on mount
+  useEffect(() => {
+    fetch('/data/respengr.json')
+      .then(res => res.json())
+      .then(data => {
+        setOuchieImages(data.ouchieImages || []);
+        setArticles(data.articles || []);
+        setFolders(data.folders || []);
+        setIsLoading(false);
+        console.log('📊 RespEngr data loaded:', data.meta);
+      })
+      .catch(err => {
+        console.error('Failed to load RespEngr data:', err);
+        setIsLoading(false);
+      });
+  }, []);
 
   // Update time on client only
   useEffect(() => {
@@ -97,6 +117,19 @@ export default function RespEngrPage() {
   const standaloneArticles = articles.filter(
     article => !folders.some(folder => folder.children.includes(article.id))
   );
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4 animate-pulse">👁️</div>
+          <div className="text-xl font-mono" style={{ color: PORTAL_COLOR }}>
+            Loading RespEngr workspace...
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 

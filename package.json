@@ -6,9 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "oscatcher": "node scripts/osCatcher.js",
+    "oscatcher:watch": "node scripts/osCatcher.js --watch",
+    "dev:full": "npm run oscatcher:watch & npm run dev"
   },
   "dependencies": {
+    "gray-matter": "^4.0.3",
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3"

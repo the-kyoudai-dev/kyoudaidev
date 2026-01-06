@@ -1,4 +1,4 @@
-// lib/respengr-data.ts - Updated to match actual files
+// lib/respengr-data.ts - Updated to read from generated JSON
 
 export interface OuchieImage {
   id: string;
@@ -14,6 +14,7 @@ export interface Article {
   content: string;
   created: string;
   modified: string;
+  author?: string;
   wordCount: number;
   path: string;
   tags: string[];
@@ -27,51 +28,50 @@ export interface Folder {
   children: string[];
 }
 
-// Single Ouchie Eye image matching actual file
-export const ouchieImages: OuchieImage[] = [
-  {
-    id: 'ouchie-1',
-    filename: 'Welcome to RespEngr.jpg',
-    path: '/respengr/ouchie/Welcome to RespEngr.jpg',
-    pairedArticleId: 'welcome-article'
-  }
-];
-
-// Single article matching actual file
-export const articles: Article[] = [
-  {
-    id: 'welcome-article',
-    filename: 'Welcome to RespEngr.md',
-    title: 'Welcome to the Response Engineering (RespEngr) portal',
-    created: '2026-01-06T14:48:00Z',
-    modified: '2026-01-06T14:48:00Z',
-    wordCount: 25,
-    path: '/Welcome to RespEngr.md',
-    tags: ['welcome', 'respengr', 'kyoudai', 'civilization'],
-    status: 'published',
-    content: `Welcome to the KYOUDAI Civilization RespEngr Portal
-
-This is a living window into the Response Engineering workspace. You're not reading a blog—you're invading a workspace.
-
-The RespEngr portal is where response architecture meets real-time research. Every interaction shapes the conversation space.
-
-Click around. Explore. Change your perception.
-
-The Ouchie Eye sees all. 👁️
-
-BY: Amukat
-CREATED: 2601061448
-UPDATED: 2601061448`
-  }
-];
-
-// No folders - single article at root
-export const folders: Folder[] = [];
-
-export function getRespEngrData() {
-  return {
-    ouchieImages,
-    articles,
-    folders
+interface RespEngrData {
+  ouchieImages: OuchieImage[];
+  articles: Article[];
+  folders: Folder[];
+  meta?: {
+    generated: string;
+    totalArticles: number;
+    totalImages: number;
+    totalFolders: number;
   };
+}
+
+// Fallback data for development
+const fallbackData: RespEngrData = {
+  ouchieImages: [],
+  articles: [],
+  folders: [],
+  meta: {
+    generated: new Date().toISOString(),
+    totalArticles: 0,
+    totalImages: 0,
+    totalFolders: 0
+  }
+};
+
+export function getRespEngrData(): RespEngrData {
+  // In browser, return fallback (will be loaded via client-side fetch)
+  if (typeof window !== 'undefined') {
+    return fallbackData;
+  }
+  
+  // On server, read from generated JSON
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const dataPath = path.join(process.cwd(), 'public', 'data', 'respengr.json');
+    
+    if (fs.existsSync(dataPath)) {
+      const data = fs.readFileSync(dataPath, 'utf-8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('Error loading RespEngr data:', error);
+  }
+  
+  return fallbackData;
 }

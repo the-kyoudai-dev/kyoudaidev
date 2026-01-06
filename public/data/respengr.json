@@ -1,0 +1,43 @@
+{
+  "ouchieImages": [
+    {
+      "id": "ouchie-welcome-to-respengr",
+      "filename": "Welcome to RespEngr.jpg",
+      "path": "/respengr/ouchie/Welcome to RespEngr.jpg",
+      "pairedArticleId": "welcome-to-respengr"
+    }
+  ],
+  "articles": [
+    {
+      "id": "welcome-to-respengr",
+      "filename": "Welcome to RespEngr.md",
+      "title": "Welcome to the Response Engineering (RespEngr) portal",
+      "content": "![[ouchie/City of Interaction.jpg]]\n# Welcome to the KYOUDAI Civilization RespEngr Portal",
+      "created": "2026-01-06T22:48:00.000Z",
+      "modified": "2026-01-06T22:48:00.000Z",
+      "author": "Amukat",
+      "wordCount": 11,
+      "path": "/Welcome to RespEngr.md",
+      "tags": [
+        "respengr"
+      ],
+      "status": "published"
+    }
+  ],
+  "folders": [
+    {
+      "id": "folder-2026-01",
+      "name": "2026-01",
+      "path": "/2026-01",
+      "children": [
+        "welcome-to-respengr"
+      ]
+    }
+  ],
+  "meta": {
+    "generated": "2026-01-06T23:21:21.316Z",
+    "totalArticles": 1,
+    "totalImages": 1,
+    "totalFolders": 1
+  }
+}
