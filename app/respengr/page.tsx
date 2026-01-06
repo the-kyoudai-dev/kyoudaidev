@@ -1,0 +1,272 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { getRespEngrData } from '@/lib/respengr-data';
+import BlogOSTaskbar from './components/BlogOSTaskbar';
+import DraggableArticleModal from './components/DraggableArticleModal';
+import DraggableFolderWindow from './components/DraggableFolderWindow';
+import type { Article, Folder } from '@/lib/respengr-data';
+
+// RespEngr Portal Color: Fuchsia
+const PORTAL_COLOR = '#FF00FF';
+
+export default function RespEngrPage() {
+  const { ouchieImages, articles, folders } = getRespEngrData();
+  
+  // Randomizer state
+  const [isRandomizing, setIsRandomizing] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imageHistory, setImageHistory] = useState<number[]>([0]);
+  const [historyPointer, setHistoryPointer] = useState(0);
+
+  // View state - START WITH DESKTOP VIEW
+  const [viewMode, setViewMode] = useState<'desktop' | 'filetree'>('desktop');
+
+  // Modal state
+  const [openArticle, setOpenArticle] = useState<Article | null>(null);
+  const [openFolder, setOpenFolder] = useState<Folder | null>(null);
+  const [topZIndex, setTopZIndex] = useState(100);
+
+  // Add client-side time state
+  const [currentTime, setCurrentTime] = useState('--:--:--');
+
+  // Update time on client only
+  useEffect(() => {
+    const updateTime = () => {
+      setCurrentTime(new Date().toLocaleTimeString());
+    };
+    
+    updateTime(); // Set immediately
+    const interval = setInterval(updateTime, 1000); // Update every second
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Randomizer logic
+  useEffect(() => {
+    if (!isRandomizing) return;
+
+    const interval = setInterval(() => {
+      const nextIndex = Math.floor(Math.random() * ouchieImages.length);
+      setCurrentImageIndex(nextIndex);
+      setImageHistory(prev => [...prev.slice(0, historyPointer + 1), nextIndex]);
+      setHistoryPointer(prev => prev + 1);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isRandomizing, ouchieImages.length, historyPointer]);
+
+  const handleNavigateBack = () => {
+    if (historyPointer > 0) {
+      const newPointer = historyPointer - 1;
+      setHistoryPointer(newPointer);
+      setCurrentImageIndex(imageHistory[newPointer]);
+    }
+  };
+
+  const handleNavigateForward = () => {
+    if (historyPointer < imageHistory.length - 1) {
+      const newPointer = historyPointer + 1;
+      setHistoryPointer(newPointer);
+      setCurrentImageIndex(imageHistory[newPointer]);
+    }
+  };
+
+  const handleArticleClick = (article: Article) => {
+    setOpenArticle(article);
+    setOpenFolder(null); // Close folder when opening article
+    setTopZIndex(prev => prev + 1);
+  };
+
+  const handleFolderClick = (folder: Folder) => {
+    setOpenFolder(folder);
+    setOpenArticle(null); // Close article when opening folder
+    setTopZIndex(prev => prev + 1);
+  };
+
+  const handleBackgroundClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setOpenArticle(null);
+      setOpenFolder(null);
+    }
+  };
+
+  const currentBackground = ouchieImages[currentImageIndex]?.path || '';
+
+  // Standalone files (articles not in folders)
+  const standaloneArticles = articles.filter(
+    article => !folders.some(folder => folder.children.includes(article.id))
+  );
+
+  return (
+    <div 
+      className="min-h-screen bg-neutral-950 text-white relative overflow-hidden pb-16"
+      onClick={handleBackgroundClick}
+    >
+      {/* Animated Background (subtle) */}
+      <div
+        className="fixed inset-0 bg-cover bg-center transition-all duration-1000"
+        style={{
+          backgroundImage: `url(${currentBackground})`,
+          opacity: 0.08,
+          filter: 'blur(20px)',
+          transform: 'scale(1.1)'
+        }}
+      />
+
+      {/* Top Bar (Linux-style) */}
+      <div 
+        className="relative z-20 px-4 py-2 flex items-center justify-between font-mono text-sm"
+        style={{ backgroundColor: '#1a1a1a', borderBottom: `1px solid ${PORTAL_COLOR}` }}
+      >
+        <div className="flex items-center gap-4">
+          <span style={{ color: PORTAL_COLOR }} className="font-bold">KYOUDAI.dev</span>
+          <span className="text-neutral-600">|</span>
+          <span className="text-neutral-400">RespEngr v1.0</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-4xl">👁️</span>
+          {/* Fix: suppressHydrationWarning for dynamic time */}
+          <span className="text-neutral-500" suppressHydrationWarning>
+            {currentTime}
+          </span>
+        </div>
+      </div>
+
+      {/* Desktop View */}
+      {viewMode === 'desktop' && (
+        <main className="relative z-10 p-8">
+          <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-6">
+            {/* Folder Icons */}
+            {folders.map(folder => (
+              <button
+                key={folder.id}
+                onClick={() => handleFolderClick(folder)}
+                className="flex flex-col items-center gap-2 group"
+              >
+                <div className="text-6xl group-hover:scale-110 transition-transform">
+                  📁
+                </div>
+                <span 
+                  className="text-xs font-mono text-center group-hover:underline"
+                  style={{ color: PORTAL_COLOR }}
+                >
+                  {folder.name}
+                </span>
+              </button>
+            ))}
+
+            {/* Standalone File Icons */}
+            {standaloneArticles.map(article => (
+              <button
+                key={article.id}
+                onClick={() => handleArticleClick(article)}
+                className="flex flex-col items-center gap-2 group"
+              >
+                <div className="text-6xl group-hover:scale-110 transition-transform">
+                  📄
+                </div>
+                <span className="text-xs font-mono text-neutral-400 text-center group-hover:text-white line-clamp-2">
+                  {article.filename}
+                </span>
+              </button>
+            ))}
+          </div>
+        </main>
+      )}
+
+      {/* File Tree View */}
+      {viewMode === 'filetree' && (
+        <main className="relative z-10 p-8">
+          <div 
+            className="max-w-4xl mx-auto rounded border p-6"
+            style={{ 
+              backgroundColor: '#1a1a1a',
+              borderColor: PORTAL_COLOR
+            }}
+          >
+            <h2 
+              className="text-sm font-mono uppercase mb-4"
+              style={{ color: PORTAL_COLOR }}
+            >
+              Archive Structure
+            </h2>
+            <nav className="space-y-3">
+              {folders.map(folder => {
+                const folderArticles = articles.filter(a => folder.children.includes(a.id));
+                
+                return (
+                  <div key={folder.id}>
+                    <button
+                      onClick={() => handleFolderClick(folder)}
+                      className="flex items-center gap-2 hover:text-white transition-colors font-mono text-sm w-full text-left"
+                      style={{ color: PORTAL_COLOR }}
+                    >
+                      <span>📁</span>
+                      <span>{folder.name}</span>
+                      <span className="text-neutral-600 text-xs">({folderArticles.length})</span>
+                    </button>
+                  </div>
+                );
+              })}
+
+              {/* Standalone files */}
+              {standaloneArticles.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-neutral-800">
+                  <div className="text-xs font-mono text-neutral-600 mb-2">Root Files</div>
+                  {standaloneArticles.map(article => (
+                    <button
+                      key={article.id}
+                      onClick={() => handleArticleClick(article)}
+                      className="block text-sm font-mono text-neutral-400 hover:text-white transition-colors text-left w-full mb-2"
+                    >
+                      <span className="mr-2">📄</span>
+                      {article.filename}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </nav>
+          </div>
+        </main>
+      )}
+
+      {/* Draggable Folder Window */}
+      {openFolder && (
+        <DraggableFolderWindow
+          folder={openFolder}
+          articles={articles.filter(a => openFolder.children.includes(a.id))}
+          onClose={() => setOpenFolder(null)}
+          onArticleClick={handleArticleClick}
+          zIndex={topZIndex}
+          onBringToFront={() => setTopZIndex(prev => prev + 1)}
+          accentColor={PORTAL_COLOR}
+        />
+      )}
+
+      {/* Draggable Article Modal */}
+      {openArticle && (
+        <DraggableArticleModal
+          article={openArticle}
+          onClose={() => setOpenArticle(null)}
+          zIndex={topZIndex}
+          onBringToFront={() => setTopZIndex(prev => prev + 1)}
+          accentColor={PORTAL_COLOR}
+        />
+      )}
+
+      {/* Taskbar */}
+      <BlogOSTaskbar
+        isRandomizing={isRandomizing}
+        onToggleRandomize={() => setIsRandomizing(prev => !prev)}
+        onNavigateBack={handleNavigateBack}
+        onNavigateForward={handleNavigateForward}
+        canGoBack={historyPointer > 0}
+        canGoForward={historyPointer < imageHistory.length - 1}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        accentColor={PORTAL_COLOR}
+      />
+    </div>
+  );
+}

@@ -16,13 +16,16 @@ export default function HomePage() {
             KYOUDAI.dev
           </span>
           <nav className="flex gap-4 text-xs text-[var(--base-white)]">
-            <a href="#about" className="hover:text-[var(--design-vibrant1)]">
+            <a href="/about" className="hover:text-[var(--design-vibrant1)]">
               About
             </a>
-            <a href="#projects" className="hover:text-[var(--design-vibrant1)]">
+            <a href="/projects" className="hover:text-[var(--design-vibrant1)]">
               Projects
             </a>
-            <a href="#contact" className="hover:text-[var(--design-vibrant1)]">
+            <a href="/respengr" className="hover:text-[var(--design-vibrant1)] text-[var(--design-vibrant2)]">
+              👁️ RespEngr
+            </a>
+            <a href="/contact" className="hover:text-[var(--design-vibrant1)]">
               Contact
             </a>
           </nav>
@@ -47,6 +50,20 @@ export default function HomePage() {
             prompt architecture, and joy-first tooling. This MVP is a living
             build print for KCiv AiBous and the civilization they support.
           </p>
+          <div className="mb-6 flex gap-4">
+            <a
+              href="/respengr"
+              className="px-6 py-3 bg-[var(--design-vibrant2)] text-[var(--base-black)] font-bold text-sm hover:bg-[var(--design-vibrant1)] transition-colors"
+            >
+              👁️ Enter RespEngr
+            </a>
+            <a
+              href="/projects"
+              className="px-6 py-3 border border-[var(--design-vibrant2)] text-[var(--design-vibrant2)] text-sm hover:bg-[var(--design-vibrant2)]/10 transition-colors"
+            >
+              View Projects
+            </a>
+          </div>
           <div className="flex flex-wrap gap-3 text-xs">
             <span className="px-3 py-1 border border-[var(--border-color-accent)]">
               Next.js 16 · Tailwind · Vercel
@@ -71,6 +88,15 @@ export default function HomePage() {
             Featured Projects
           </h2>
           <ul className="grid gap-4 md:grid-cols-2 text-xs">
+            <li className="border border-[var(--design-vibrant2)] p-4 bg-[var(--design-vibrant2)]/5">
+              <h3 className="mb-1 font-bold text-[var(--design-vibrant2)]">👁️ RespEngr</h3>
+              <p className="text-[var(--base-white)] mb-2">
+                Response Engineering workspace. Real-time research from the vault with Ouchie Eye visualization.
+              </p>
+              <a href="/respengr" className="text-[var(--design-vibrant2)] hover:text-[var(--design-vibrant1)] text-xs">
+                → Enter workspace
+              </a>
+            </li>
             <li className="border border-[var(--border-color-default)] p-4">
               <h3 className="mb-1 font-bold">KCivAiTHENA</h3>
               <p className="text-[var(--research-cool2)]">

@@ -18,23 +18,34 @@ export default function AboutPage() {
             lineHeight: "var(--line-height-tight)",
             letterSpacing: "var(--letter-spacing-wide)",
           }}
-        >
-          About Amukat
+      >
+        About Amukat
         </h1>
-        <p className="mb-4 text-sm leading-[var(--line-height-normal)]">
-          Amukat is a prompt architect and AiBou designer building KYOUDAI.dev
-          as a living laboratory for agent design, control word systems, and
-          joy-first tooling.
-        </p>
-        <p className="mb-4 text-sm leading-[var(--line-height-normal)]">
-          The work centers on KYOUDAI principles: with joy as the telos,
-          documentation as care, and collaboration as the default mode of
-          thinking.
-        </p>
-        <p className="text-xs text-[var(--design-vibrant2)]">
-          This page will later pull structured content from{" "}
-          <code>Amukat_Profile.md</code>.
-        </p>
+
+       <p className="mb-4 text-sm leading-normal">
+        Amukat is a prompt architect and AiBou designer building KYOUDAI.dev as a
+        living laboratory for agents, systems, and stories. The work sits at the
+        intersection of research, design, and engineering, but always with joy as
+        the organizing principle.
+       </p>
+
+       <p className="mb-4 text-sm leading-normal">
+        Instead of treating AI as a black box, KYOUDAI treats each agent as an
+        accountable collaborator. PrAPPt scripts, control words, and build prints
+        turn fuzzy ideas into auditable, repeatable workflows that humans can
+        inspect, remix, and improve.
+       </p>
+
+       <p className="mb-4 text-sm leading-normal">
+        This space is where those AiBous are imagined, tested, and refined in
+        public. If a tool increases clarity, reduces friction, or sparks delight,
+        it stays. If it confuses or bores, it gets rewritten.
+       </p>
+
+       <p className="text-xs text-[var(--design-vibrant2)]">
+        Future phases will pull structured biography and constraints directly from
+        <code className="ml-1">Amukat_Profile.md</code> and related KCiv specs.
+       </p>
       </div>
     </main>
   );
