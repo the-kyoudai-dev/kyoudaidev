@@ -1,0 +1,107 @@
+:root {
+  /* Chromatic Portal Identity */
+  --portal-respengr: #FF00FF; /* FUCHSIA */
+  --portal-prappt: #00FFFF;   /* TEAL */
+  --portal-aiboumos: #8040C0; /* PURPLE */
+
+  /* Base Palette */
+  --base-black: #000000;
+  --base-white: #FFFFFF;
+  --base-dark-gray: #1A1A1A;
+
+  /* Accent System */
+  --accent-primary: #8040C0;
+  --accent-primary-hover: #9050D0;
+  --accent-primary-active: #7030B0;
+
+  /* Domain Tints – Research (cool) */
+  --research-cool1: #00CED1;
+  --research-cool2: #4682B4;
+  --research-cool3: #5F9EA0;
+
+  /* Domain Tints – Design (vibrant) */
+  --design-vibrant1: #FF1493;
+  --design-vibrant2: #00FF7F;
+  --design-vibrant3: #FF00FF;
+
+  /* Domain Tints – Content (warm) */
+  --content-warm1: #FF7F50;
+  --content-warm2: #FFD700;
+  --content-warm3: #FFA07A;
+
+  /* Opacity Layers (used with rgba() in CSS) */
+  --opacity-background: 0.20;
+  --opacity-card-bg: 0.30;
+  --opacity-overlay: 0.80;
+
+  /* Typography */
+  --font-family-mono: "Noto Mono", monospace;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+
+  --font-size-xl: 3rem;   /* 48px */
+  --font-size-l: 2rem;    /* 32px */
+  --font-size-s: 1.25rem; /* 20px */
+  --font-size-xs: 0.875rem; /* 14px */
+
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.8;
+
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.05em;
+
+  /* Spacing (8px scale) */
+  --spacing-xs: 8px;
+  --spacing-s: 16px;
+  --spacing-m: 24px;
+  --spacing-l: 32px;
+  --spacing-xl: 40px;
+  --spacing-xxl: 48px;
+
+  /* Layout */
+  --content-max-width: 1440px;
+
+  /* Borders */
+  --border-width-thin: 1px;
+  --border-width-thick: 2px;
+  --border-style: solid;
+  --border-color-default: #FFFFFF;
+  --border-color-accent: #8040C0;
+  --border-radius-none: 0px;
+
+  /* Shadows */
+  --shadow-modal-1: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-modal-2: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover: 0 4px 12px rgba(128, 64, 192, 0.3);
+
+  /* Animation */
+  --duration-fast: 0.3s;
+  --duration-medium: 0.5s;
+  --duration-slow: 1s;
+
+  --easing-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --easing-in: cubic-bezier(0.4, 0.0, 1, 1);
+  --easing-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+
+  /* Z-index */
+  --z-base: 0;
+  --z-card: 1;
+  --z-header: 10;
+  --z-modal: 100;
+  --z-tooltip: 200;
+
+  /* Focus */
+  --focus-ring: 0 0 0 3px rgba(128, 64, 192, 0.4);
+  --focus-outline-color: #8040C0;
+}
+
+/* Global body defaults that use tokens */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--base-black);
+  color: var(--base-white);
+  font-family: var(--font-family-mono);
+  line-height: var(--line-height-normal);
+}

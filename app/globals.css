@@ -1,0 +1,12 @@
+@import "../styles/tokens.css";
+@import "tailwindcss";
+
+/* Tailwind v4 uses this single import.
+   Do NOT add @tailwind base/components/utilities here. */
+
+body {
+  background-color: var(--base-black);
+  color: var(--base-white);
+  font-family: var(--font-family-mono);
+  line-height: var(--line-height-normal);
+}
