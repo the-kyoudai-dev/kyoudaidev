@@ -4,10 +4,11 @@ import { useState, useRef, useEffect } from 'react';
 import { marked } from 'marked';
 import type { Article } from '@/lib/respengr-data';
 
-// Configure marked for better rendering
+// Configure marked for better rendering with proper heading sizes
 marked.setOptions({
   breaks: true,
-  gfm: true
+  gfm: true,
+  headerIds: true
 });
 
 interface DraggableArticleModalProps {
@@ -32,8 +33,28 @@ export default function DraggableArticleModal({
   const [imageError, setImageError] = useState(false);
   const dragRef = useRef<{ startX: number; startY: number } | null>(null);
   
-  // Render markdown to HTML
-  const renderedContent = marked(article.content);
+  // Process markdown to remove Obsidian embeds and convert to alt text
+  const processObsidianSyntax = (content: string): string => {
+    // Remove Obsidian image embeds: ![[path/to/image.jpg]] or ![[image.jpg|alt text]]
+    let processed = content.replace(/!\[\[([^\]|]+)(\|([^\]]+))?\]\]/g, (match, imagePath, pipe, altText) => {
+      // Extract filename from path
+      const filename = imagePath.split('/').pop();
+      // Use alt text if provided, otherwise use filename without extension
+      const displayText = altText || filename.replace(/\.\w+$/, '');
+      return `_[Image: ${displayText}]_`;
+    });
+    
+    // Also handle regular Obsidian links [[link]] → convert to text
+    processed = processed.replace(/\[\[([^\]|]+)(\|([^\]]+))?\]\]/g, (match, link, pipe, displayText) => {
+      return displayText || link;
+    });
+    
+    return processed;
+  };
+  
+  // Process content and render markdown
+  const processedContent = processObsidianSyntax(article.content);
+  const renderedContent = marked(processedContent);
   
   // Check for paired image - try multiple extensions
   const baseFilename = article.filename.replace('.md', '');
@@ -80,7 +101,7 @@ export default function DraggableArticleModal({
     const handleMouseMove = (e: MouseEvent) => {
       if (isDragging && dragRef.current) {
         setPosition({
-          x: Math.max(0, Math.min(window.innerWidth - 700, e.clientX - dragRef.current.startX)),
+          x: Math.max(0, Math.min(window.innerWidth - 600, e.clientX - dragRef.current.startX)),
           y: Math.max(0, Math.min(window.innerHeight - 100, e.clientY - dragRef.current.startY))
         });
       }
@@ -150,7 +171,8 @@ export default function DraggableArticleModal({
           <h2 className="text-2xl font-mono font-bold mb-3" style={{ color: accentColor }}>
             {article.title}
           </h2>
-          <div className="text-sm font-mono flex gap-4" style={{ color: `${accentColor}80` }}>
+          {/* LIGHTER METADATA */}
+          <div className="text-sm font-mono flex gap-4 text-neutral-400">
             <span>{article.wordCount} words</span>
             <span>·</span>
             <span>{new Date(article.created).toLocaleDateString()}</span>
@@ -176,19 +198,124 @@ export default function DraggableArticleModal({
           </div>
         )}
 
-        {/* Article Content with Markdown */}
+        {/* Article Content with Proper Heading Sizes */}
         <div className="p-6">
+          <style jsx>{`
+            .article-content h1 {
+              font-size: 2rem;
+              line-height: 2.5rem;
+              font-weight: bold;
+              margin-top: 1.5rem;
+              margin-bottom: 1rem;
+              color: ${accentColor};
+            }
+            .article-content h2 {
+              font-size: 1.75rem;
+              line-height: 2.25rem;
+              font-weight: bold;
+              margin-top: 1.25rem;
+              margin-bottom: 0.875rem;
+              color: ${accentColor};
+            }
+            .article-content h3 {
+              font-size: 1.5rem;
+              line-height: 2rem;
+              font-weight: 600;
+              margin-top: 1rem;
+              margin-bottom: 0.75rem;
+              color: ${accentColor};
+            }
+            .article-content h4 {
+              font-size: 1.25rem;
+              line-height: 1.75rem;
+              font-weight: 600;
+              margin-top: 0.875rem;
+              margin-bottom: 0.625rem;
+              color: ${accentColor};
+            }
+            .article-content h5 {
+              font-size: 1.125rem;
+              line-height: 1.625rem;
+              font-weight: 600;
+              margin-top: 0.75rem;
+              margin-bottom: 0.5rem;
+              color: ${accentColor};
+            }
+            .article-content h6 {
+              font-size: 1rem;
+              line-height: 1.5rem;
+              font-weight: 600;
+              margin-top: 0.625rem;
+              margin-bottom: 0.5rem;
+              color: ${accentColor};
+            }
+            .article-content p {
+              font-size: 1rem;
+              line-height: 1.75rem;
+              margin-bottom: 1rem;
+              color: #e5e5e5;
+            }
+            .article-content ul, .article-content ol {
+              margin-left: 1.5rem;
+              margin-bottom: 1rem;
+              color: #e5e5e5;
+            }
+            .article-content li {
+              margin-bottom: 0.5rem;
+              line-height: 1.625rem;
+            }
+            .article-content a {
+              color: ${accentColor};
+              text-decoration: underline;
+            }
+            .article-content a:hover {
+              opacity: 0.8;
+            }
+            .article-content code {
+              background-color: #1a1a1a;
+              color: ${accentColor};
+              padding: 0.125rem 0.375rem;
+              border-radius: 0.25rem;
+              font-size: 0.875rem;
+            }
+            .article-content pre {
+              background-color: #1a1a1a;
+              padding: 1rem;
+              border-radius: 0.5rem;
+              overflow-x: auto;
+              margin-bottom: 1rem;
+              border: 1px solid ${accentColor}40;
+            }
+            .article-content pre code {
+              background-color: transparent;
+              padding: 0;
+              color: #e5e5e5;
+            }
+            .article-content blockquote {
+              border-left: 4px solid ${accentColor};
+              padding-left: 1rem;
+              margin-left: 0;
+              margin-bottom: 1rem;
+              color: #d4d4d4;
+              font-style: italic;
+            }
+            .article-content em {
+              color: #d4d4d4;
+              font-style: italic;
+            }
+            .article-content strong {
+              color: #ffffff;
+              font-weight: bold;
+            }
+            .article-content hr {
+              border: none;
+              border-top: 1px solid ${accentColor}40;
+              margin: 1.5rem 0;
+            }
+          `}</style>
+          
           <div 
-            className="prose prose-invert max-w-none font-mono leading-relaxed"
-            style={{
-              '--tw-prose-body': '#e5e5e5',
-              '--tw-prose-headings': accentColor,
-              '--tw-prose-links': accentColor,
-              '--tw-prose-bold': '#ffffff',
-              '--tw-prose-code': accentColor,
-              '--tw-prose-pre-bg': '#1a1a1a',
-              '--tw-prose-pre-code': '#e5e5e5'
-            } as React.CSSProperties}
+            className="article-content font-mono"
             dangerouslySetInnerHTML={{ __html: renderedContent }}
           />
         </div>
