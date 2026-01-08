@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrAPPt Framework - KYOUDAI.dev</title>
+  <link rel="stylesheet" href="css/prappt.css">
+</head>
+<body>
+   
+  <!-- Mobile Menu Toggle -->
+  <button id="mobile-menu-toggle" class="mobile-menu-btn" aria-label="Toggle navigation">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h1><a href="/">KYOUDAI.dev</a></h1>
+      <h2>PrAPPt Framework</h2>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+      <input 
+        type="text" 
+        id="lesson-search" 
+        class="search-input" 
+        placeholder="Search lessons..."
+        aria-label="Search lessons"
+      >
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-indicator">
+      <div class="progress-bar">
+        <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+      </div>
+      <p class="progress-text"><span id="completed-count">0</span> of <span id="total-count">0</span> complete</p>
+    </div>
+
+    <!-- Lesson Navigation -->
+    <nav class="lesson-nav" id="lesson-nav">
+      <!-- Populated by JavaScript from curriculum.json -->
+      <div class="nav-loading">Loading curriculum...</div>
+    </nav>
+
+    <!-- Footer Links -->
+    <div class="sidebar-footer">
+      <a href="/">← Back to Gateway</a>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main id="main-content" class="main-content">
+       
+    <!-- Lesson Header -->
+    <header id="lesson-header" class="lesson-header" style="display: none;">
+      <div class="breadcrumbs" id="breadcrumbs">
+        <a href="/">Home</a> / <a href="/prappt">PrAPPt</a> / <span id="current-lesson-breadcrumb">...</span>
+      </div>
+      <h1 id="lesson-title">Lesson Title</h1>
+      <div class="lesson-meta">
+        <span class="difficulty-badge" id="difficulty-badge">Foundation</span>
+        <span class="time-estimate" id="time-estimate">⏱ 30 min</span>
+        <span class="last-updated" id="last-updated">Updated: 2026-01-07</span>
+      </div>
+    </header>
+
+    <!-- Lesson Content -->
+    <article id="lesson-content" class="lesson-content">
+      <!-- Welcome screen (shown on initial load) -->
+      <div id="welcome-screen" class="welcome-screen">
+        <h1>Welcome to the PrAPPt Framework</h1>
+        <p>A structured approach to building AI partners through Response Engineering.</p>
+        <p class="welcome-subtitle">Select a lesson from the sidebar to begin your learning journey.</p>
+               
+        <div class="quick-start">
+          <h2>Quick Start</h2>
+          <div class="tier-cards">
+            <div class="tier-card foundation">
+              <h3>🌱 Foundation</h3>
+              <p>Core concepts and philosophy</p>
+            </div>
+            <div class="tier-card intermediate">
+              <h3>🔧 Intermediate</h3>
+              <p>Building and refining AiBous</p>
+            </div>
+            <div class="tier-card advanced">
+              <h3>🚀 Advanced</h3>
+              <p>Orchestration and mastery</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lesson body (populated by JavaScript) -->
+      <div id="lesson-body" style="display: none;">
+        <!-- Rendered markdown content goes here -->
+      </div>
+    </article>
+
+    <!-- Lesson Navigation Footer -->
+    <footer id="lesson-footer" class="lesson-footer" style="display: none;">
+      <div class="lesson-nav-buttons">
+        <button id="prev-lesson" class="nav-button prev" disabled>
+          ← Previous Lesson
+        </button>
+        <button id="next-lesson" class="nav-button next" disabled>
+          Next Lesson →
+        </button>
+      </div>
+
+      <!-- Related Concepts -->
+      <div id="related-concepts" class="related-concepts">
+        <h3>Related Concepts</h3>
+        <ul id="related-list">
+          <!-- Populated by JavaScript -->
+        </ul>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay" style="display: none;">
+    <div class="spinner"></div>
+    <p>Loading lesson...</p>
+  </div>
+
+  <script src="js/prappt.js"></script>
+</body>
+</html>

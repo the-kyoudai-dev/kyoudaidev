@@ -1,0 +1,71 @@
+{
+  "version": "1.0",
+  "updated": "2026-01-07T17:30:00Z",
+  "totalLessons": 4,
+  "lessons": [
+    {
+      "id": "01-semantic-weight",
+      "title": "Module 1: The Semantic Weight of Language",
+      "difficulty": "foundation",
+      "prerequisites": [],
+      "estimatedTime": "25 min",
+      "tags": ["foundation", "language", "response-engineering"],
+      "updated": "2026-01-07T17:30:00Z"
+    },
+    {
+      "id": "02-discovery-phase",
+      "title": "Module 2: The Discovery Phase",
+      "difficulty": "foundation",
+      "prerequisites": ["01-semantic-weight"],
+      "estimatedTime": "25 min",
+      "tags": ["discovery", "atomic-truths", "methodology"],
+      "updated": "2026-01-07T17:30:00Z"
+    },
+    {
+      "id": "03-construction-phase",
+      "title": "Module 3: The Construction Phase",
+      "difficulty": "intermediate",
+      "prerequisites": ["01-semantic-weight", "02-discovery-phase"],
+      "estimatedTime": "35 min",
+      "tags": ["proappt-structure", "construction", "reverse-engineering"],
+      "updated": "2026-01-07T17:30:00Z"
+    },
+    {
+      "id": "04-activation-iteration",
+      "title": "Module 4: Activation & Iteration",
+      "difficulty": "intermediate",
+      "prerequisites": ["03-construction-phase"],
+      "estimatedTime": "20 min",
+      "tags": ["activation", "iteration", "testing"],
+      "updated": "2026-01-07T17:30:00Z"
+    }
+  ],
+  "hierarchy": {
+    "foundation": [
+      {
+        "id": "01-semantic-weight",
+        "title": "Module 1: The Semantic Weight of Language",
+        "estimatedTime": "25 min"
+      },
+      {
+        "id": "02-discovery-phase",
+        "title": "Module 2: The Discovery Phase",
+        "estimatedTime": "25 min"
+      }
+    ],
+    "intermediate": [
+      {
+        "id": "03-construction-phase",
+        "title": "Module 3: The Construction Phase",
+        "estimatedTime": "35 min"
+      },
+      {
+        "id": "04-activation-iteration",
+        "title": "Module 4: Activation & Iteration",
+        "estimatedTime": "20 min"
+      }
+    ],
+    "advanced": [],
+    "expert": []
+  }
+}
