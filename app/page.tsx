@@ -22,7 +22,7 @@ export default function HomePage() {
             <a href="/projects" className="hover:text-[var(--design-vibrant1)]">
               Projects
             </a>
-            <a href="/prappt/" className="hover:text-[var(--design-vibrant1)]">
+            <a href="/prappt" className="hover:text-[var(--design-vibrant1)]">
               PrAPPt
             </a>
             <a href="/respengr" className="hover:text-[var(--design-vibrant1)] text-[var(--design-vibrant2)]">
@@ -61,7 +61,7 @@ export default function HomePage() {
               👁️ Enter RespEngr
             </a>
             <a
-              href="/prappt/"
+              href="/prappt"
               className="px-6 py-3 border border-[var(--design-vibrant2)] text-[var(--design-vibrant2)] text-sm hover:bg-[var(--design-vibrant2)]/10 transition-colors"
             >
               Enter PrAPPt
@@ -111,7 +111,7 @@ export default function HomePage() {
               <p className="text-[var(--base-white)] mb-2">
                 Prompt Architecture Pattern Portal. Interactive curriculum for mastering AiBou design patterns.
               </p>
-              <a href="/prappt/" className="text-[var(--design-vibrant2)] hover:text-[var(--design-vibrant1)] text-xs">
+              <a href="/prappt" className="text-[var(--design-vibrant2)] hover:text-[var(--design-vibrant1)] text-xs">
                 → Enter portal
               </a>
             </li>
