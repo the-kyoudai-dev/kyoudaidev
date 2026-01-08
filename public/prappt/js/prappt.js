@@ -176,7 +176,7 @@ function findLesson(lessonId) {
 // ============================================================================
 
 function parseFrontmatter(markdown) {
-  const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
+  const frontmatterRegex = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/;
   const match = markdown.match(frontmatterRegex);
    
   if (!match) {
@@ -201,43 +201,36 @@ function parseFrontmatter(markdown) {
 }
 
 function markdownToHTML(markdown) {
-  let html = markdown;
-   
-  // Headings
-  html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-   
-  // Wikilinks [[target]] or [[target|display]]
-  html = html.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (match, target, display) => {
-    const displayText = display || target;
-    return `<a href="#" class="wikilink" data-target="${target}">${displayText}</a>`;
-  });
-   
-  // Bold
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-   
-  // Italic
-  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-   
-  // Code blocks
-  html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-   
-  // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-   
-  // Links
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-   
-  // Paragraphs
-  html = html.split('\n\n').map(para => {
-    if (para.trim() && !para.startsWith('<')) {
-      return `<p>${para.trim()}</p>`;
+  // Guard against CDN failure
+  if (!window.marked?.parse) {
+    return '<p><em>Markdown engine failed to load.</em></p>';
+  }
+  
+  const escHtml = (s) =>
+    String(s).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }[c]));
+  
+  const escAttr = escHtml;
+  
+  // 1) Convert wikilinks to real anchors (raw HTML passthrough)
+  const withWikilinks = markdown.replace(
+    /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,
+    (match, target, display) => {
+      const displayText = display || target;
+      return `<a href="#" class="wikilink" data-target="${escAttr(target)}">${escHtml(displayText)}</a>`;
     }
-    return para;
-  }).join('\n');
-   
-  return html;
+  );
+  
+  // 2) Strip tooling citation markers
+  const cleaned = withWikilinks.replace(/\[(file|web):\d+\]/g, '');
+  
+  // 3) Parse Markdown
+  return marked.parse(cleaned);
 }
 
 // ============================================================================

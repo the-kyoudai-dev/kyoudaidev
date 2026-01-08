@@ -1,84 +1,85 @@
 {
-  "version": "1.0",
-  "updated": "2026-01-07T17:30:00Z",
-  "totalLessons": 5,
   "lessons": [
     {
       "id": "00-welcome-to-prappt",
       "title": "Welcome to the PrAPPt Framework",
-      "difficulty": "foundation",
+      "difficulty": "foundational",
       "prerequisites": [],
-      "estimatedTime": "5 min",
-      "tags": ["introduction", "prappt-core", "getting-started"],
-      "updated": "2026-01-07T17:30:00Z"
+      "estimatedTime": "6 min",
+      "tags": ["prappt", "overview"],
+      "updated": "2026-01-08"
     },
     {
       "id": "01-semantic-weight",
-      "title": "Module 1: The Semantic Weight of Language",
-      "difficulty": "foundation",
-      "prerequisites": [],
-      "estimatedTime": "25 min",
-      "tags": ["foundation", "language", "response-engineering"],
-      "updated": "2026-01-07T17:30:00Z"
+      "title": "Semantic Weight: Manners as Technical Inputs",
+      "difficulty": "foundational",
+      "prerequisites": ["00-welcome-to-prappt"],
+      "estimatedTime": "10 min",
+      "tags": ["semantic-weight", "manners", "vectors"],
+      "updated": "2026-01-08"
     },
     {
       "id": "02-discovery-phase",
-      "title": "Module 2: The Discovery Phase",
-      "difficulty": "foundation",
+      "title": "Discovery Phase: Stream of Consciousness → Proto-AiBou",
+      "difficulty": "foundational",
       "prerequisites": ["01-semantic-weight"],
-      "estimatedTime": "25 min",
-      "tags": ["discovery", "atomic-truths", "methodology"],
-      "updated": "2026-01-07T17:30:00Z"
+      "estimatedTime": "15 min",
+      "tags": ["discovery", "proto-aibou", "atomic-development"],
+      "updated": "2026-01-08"
     },
     {
       "id": "03-construction-phase",
-      "title": "Module 3: The Construction Phase",
-      "difficulty": "intermediate",
-      "prerequisites": ["01-semantic-weight", "02-discovery-phase"],
-      "estimatedTime": "35 min",
-      "tags": ["proappt-structure", "construction", "reverse-engineering"],
-      "updated": "2026-01-07T17:30:00Z"
+      "title": "Construction Phase: Build the PrAPPt Script (Backwards)",
+      "difficulty": "foundational",
+      "prerequisites": ["02-discovery-phase"],
+      "estimatedTime": "18 min",
+      "tags": ["product", "regulation", "approach", "persona", "purpose", "trigger"],
+      "updated": "2026-01-08"
     },
     {
       "id": "04-activation-iteration",
-      "title": "Module 4: Activation & Iteration",
-      "difficulty": "intermediate",
+      "title": "Activation & Iteration: Trigger, Test, Patch",
+      "difficulty": "foundational",
       "prerequisites": ["03-construction-phase"],
-      "estimatedTime": "20 min",
-      "tags": ["activation", "iteration", "testing"],
-      "updated": "2026-01-07T17:30:00Z"
+      "estimatedTime": "14 min",
+      "tags": ["activation", "testing", "drift", "patch-mentality"],
+      "updated": "2026-01-08"
     }
   ],
   "hierarchy": {
-    "foundation": [
+    "foundational": [
       {
         "id": "00-welcome-to-prappt",
         "title": "Welcome to the PrAPPt Framework",
-        "estimatedTime": "5 min"
+        "difficulty": "foundational",
+        "estimatedTime": "6 min"
       },
       {
         "id": "01-semantic-weight",
-        "title": "Module 1: The Semantic Weight of Language",
-        "estimatedTime": "25 min"
+        "title": "Semantic Weight: Manners as Technical Inputs",
+        "difficulty": "foundational",
+        "estimatedTime": "10 min"
       },
       {
         "id": "02-discovery-phase",
-        "title": "Module 2: The Discovery Phase",
-        "estimatedTime": "25 min"
-      }
-    ],
-    "intermediate": [
+        "title": "Discovery Phase: Stream of Consciousness → Proto-AiBou",
+        "difficulty": "foundational",
+        "estimatedTime": "15 min"
+      },
       {
         "id": "03-construction-phase",
-        "title": "Module 3: The Construction Phase",
-        "estimatedTime": "35 min"
+        "title": "Construction Phase: Build the PrAPPt Script (Backwards)",
+        "difficulty": "foundational",
+        "estimatedTime": "18 min"
       },
       {
         "id": "04-activation-iteration",
-        "title": "Module 4: Activation & Iteration",
-        "estimatedTime": "20 min"
+        "title": "Activation & Iteration: Trigger, Test, Patch",
+        "difficulty": "foundational",
+        "estimatedTime": "14 min"
       }
     ],
+    "intermediate": [],
     "advanced": [],
     "expert": []
   }
