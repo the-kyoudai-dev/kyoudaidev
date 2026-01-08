@@ -4,6 +4,18 @@
 /* Tailwind v4 uses this single import.
    Do NOT add @tailwind base/components/utilities here. */
 
+/* Tailwind v4 Theme Extensions */
+@theme {
+  --color-border-default: var(--border-color-default);
+  --color-border-accent: var(--border-color-accent);
+  --color-design-vibrant1: var(--design-vibrant1);
+  --color-design-vibrant2: var(--design-vibrant2);
+  --color-base-black: var(--base-black);
+  --color-base-white: var(--base-white);
+  --color-research-cool2: var(--research-cool2);
+  --color-content-warm2: var(--content-warm2);
+}
+
 body {
   background-color: var(--base-black);
   color: var(--base-white);

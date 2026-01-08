@@ -22,7 +22,7 @@ The name comes from its six core components:
 - APPROACH — Their methodology.
 - PURPOSE — What they're designed to do.
 - PRODUCT — What they deliver.
-- trigger — How you activate them.
+- TRIGGER — How you activate them.
 
 ## Why PrAPPt matters
 
