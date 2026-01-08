@@ -1,8 +1,17 @@
 {
   "version": "1.0",
   "updated": "2026-01-07T17:30:00Z",
-  "totalLessons": 4,
+  "totalLessons": 5,
   "lessons": [
+    {
+      "id": "00-welcome-to-prappt",
+      "title": "Welcome to the PrAPPt Framework",
+      "difficulty": "foundation",
+      "prerequisites": [],
+      "estimatedTime": "5 min",
+      "tags": ["introduction", "prappt-core", "getting-started"],
+      "updated": "2026-01-07T17:30:00Z"
+    },
     {
       "id": "01-semantic-weight",
       "title": "Module 1: The Semantic Weight of Language",
@@ -42,6 +51,11 @@
   ],
   "hierarchy": {
     "foundation": [
+      {
+        "id": "00-welcome-to-prappt",
+        "title": "Welcome to the PrAPPt Framework",
+        "estimatedTime": "5 min"
+      },
       {
         "id": "01-semantic-weight",
         "title": "Module 1: The Semantic Weight of Language",
