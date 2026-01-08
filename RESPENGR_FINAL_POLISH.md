@@ -45,13 +45,18 @@ Display Text
 ### 3. ✅ Proper Heading Hierarchy
 **Complete typography scale with portal theming:**
 
-- **H1**: 2rem (32px) - Largest, for main titles
-- **H2**: 1.75rem (28px) - Section headers  
-- **H3**: 1.5rem (24px) - Subsections
-- **H4**: 1.25rem (20px) - Minor headings
-- **H5**: 1.125rem (18px) - Small headings
-- **H6**: 1rem (16px) - Smallest headings
+- **H1**: 3rem (48px) - Largest, for main titles (matches Obsidian prominence)
+- **H2**: 2.25rem (36px) - Section headers  
+- **H3**: 1.75rem (28px) - Subsections
+- **H4**: 1.5rem (24px) - Minor headings
+- **H5**: 1.25rem (20px) - Small headings
+- **H6**: 1.125rem (18px) - Smallest headings
 - **Body**: 1rem (16px) - Reading text
+
+**Visual hierarchy now matches Obsidian:**
+- H1 is 3x larger than body text (48px vs 16px)
+- Clear size progression between all heading levels
+- Proper spacing and margins for readability
 
 **All headings:**
 - Use fuchsia portal color (`${accentColor}`)

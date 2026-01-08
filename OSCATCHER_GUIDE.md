@@ -22,7 +22,7 @@ kyoudaidev/
 ├── public/
 │   ├── respengr/
 │   │   ├── *.md                  # Articles (scanned)
-│   │   └── ouchie/
+│   │   └── owchie/
 │   │       └── *.jpg             # Images (paired with articles)
 │   └── data/
 │       └── respengr.json         # Generated data (auto-updated)
@@ -64,14 +64,14 @@ npm run dev:full
   ```
 
 ### Images (.jpg, .png, .gif, .webp)
-- **Location**: `/public/respengr/ouchie/*`
+- **Location**: `/public/respengr/owchie/*`
 - **Auto-pairing**: Images with same name as articles get paired
 - **Example**: `Welcome to RespEngr.md` ↔ `Welcome to RespEngr.jpg`
 
 ## 🔄 Real-Time Workflow
 
 1. **Add new article**: Drop `new-article.md` in `/public/respengr/`
-2. **Add paired image**: Drop `new-article.jpg` in `/public/respengr/ouchie/`
+2. **Add paired image**: Drop `new-article.jpg` in `/public/respengr/owchie/`
 3. **osCatcher detects**: File change triggers regeneration
 4. **JSON updates**: `respengr.json` gets new data
 5. **UI refreshes**: Web interface shows new content immediately
@@ -80,11 +80,11 @@ npm run dev:full
 
 ```json
 {
-  "ouchieImages": [
+  "owchieImages": [
     {
-      "id": "ouchie-welcome-to-respengr",
+      "id": "owchie-welcome-to-respengr",
       "filename": "Welcome to RespEngr.jpg",
-      "path": "/respengr/ouchie/Welcome to RespEngr.jpg",
+      "path": "/respengr/owchie/Welcome to RespEngr.jpg",
       "pairedArticleId": "welcome-to-respengr"
     }
   ],

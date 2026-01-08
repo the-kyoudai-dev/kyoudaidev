@@ -2,12 +2,13 @@
 const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
+const { marked } = require('marked');
 
 const CONFIG = {
   vaultDir: path.join(process.cwd(), 'public', 'respengr'),
-  ouchieDir: path.join(process.cwd(), 'public', 'respengr', 'ouchie'),
+  owchieDir: path.join(process.cwd(), 'public', 'respengr', 'owchie'),
   outputFile: path.join(process.cwd(), 'public', 'data', 'respengr.json'),
-  ignorePatterns: ['.obsidian', 'ouchie'], // Ignore from file tree
+  ignorePatterns: ['.obsidian', 'owchie'], // Ignore from file tree
   watchMode: process.argv.includes('--watch')
 };
 
@@ -70,32 +71,56 @@ function parseMarkdown(filepath, baseDir) {
   const relativePath = path.relative(baseDir, filepath);
   const id = relativePath.replace(/\\/g, '/').replace(/\.md$/, '').toLowerCase().replace(/\s+/g, '-');
   
+  // Process Obsidian syntax before converting to HTML
+  const processObsidianSyntax = (content) => {
+    // Remove Obsidian image embeds: ![[path/to/image.jpg]] or ![[image.jpg|alt text]]
+    let processed = content.replace(/!\[\[([^\]|]+)(\|([^\]]+))?\]\]/g, (match, imagePath, pipe, altText) => {
+      // Extract filename from path
+      const filename = imagePath.split('/').pop();
+      // Use alt text if provided, otherwise use filename without extension
+      const displayText = altText || filename.replace(/\.\w+$/, '');
+      return `_[Image: ${displayText}]_`;
+    });
+    
+    // Also handle regular Obsidian links [[link]] → convert to text
+    processed = processed.replace(/\[\[([^\]|]+)(\|([^\]]+))?\]\]/g, (match, link, pipe, displayText) => {
+      return displayText || link;
+    });
+    
+    return processed;
+  };
+  
+  // Process content and convert to HTML
+  const processedContent = processObsidianSyntax(parsed.content.trim());
+  const htmlContent = marked(processedContent);
+  
   return {
     id,
     filename,
     title: parsed.data.title || filename.replace('.md', ''),
-    content: parsed.content.trim(),
+    content: processedContent, // Keep raw markdown for fallback
+    htmlContent: htmlContent, // Pre-processed HTML
     created: parsed.data.created || stats.birthtime.toISOString(),
     modified: stats.mtime.toISOString(),
     author: parsed.data.by || parsed.data.author || 'Amukat',
-    wordCount: parsed.content.trim().split(/\s+/).length,
+    wordCount: processedContent.split(/\s+/).length,
     path: `/${relativePath.replace(/\\/g, '/')}`,
     tags: Array.isArray(parsed.data.tags) ? parsed.data.tags : [],
     status: parsed.data.status || 'published'
   };
 }
 
-// Scan ouchie directory for background images
-function scanOuchieImages(articles) {
-  if (!fs.existsSync(CONFIG.ouchieDir)) {
-    console.log('⚠️  Ouchie directory not found, skipping image pairing');
+// Scan owchie directory for background images
+function scanOwchieImages(articles) {
+  if (!fs.existsSync(CONFIG.owchieDir)) {
+    console.log('⚠️  Owchie directory not found, skipping image pairing');
     return [];
   }
   
-  const imageFiles = fs.readdirSync(CONFIG.ouchieDir)
+  const imageFiles = fs.readdirSync(CONFIG.owchieDir)
     .filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f));
   
-  console.log(`🖼️  Found ${imageFiles.length} images in /ouchie/`);
+  console.log(`🖼️  Found ${imageFiles.length} images in /owchie/`);
   
   return imageFiles.map(imageFile => {
     // Simple pairing: article.md → article.jpg
@@ -108,9 +133,9 @@ function scanOuchieImages(articles) {
     });
     
     return {
-      id: `ouchie-${baseName.toLowerCase().replace(/\s+/g, '-')}`,
+      id: `owchie-${baseName.toLowerCase().replace(/\s+/g, '-')}`,
       filename: imageFile,
-      path: `/respengr/ouchie/${imageFile}`,
+      path: `/respengr/owchie/${imageFile}`,
       pairedArticleId: pairedArticle ? pairedArticle.id : undefined
     };
   });
@@ -151,8 +176,8 @@ function processRespEngr() {
   console.log(`📄 Found ${articles.length} articles`);
   console.log(`📁 Found ${rawFolders.length} folders`);
   
-  // Scan ouchie directory for images
-  const ouchieImages = scanOuchieImages(articles);
+  // Scan owchie directory for images
+  const owchieImages = scanOwchieImages(articles);
   
   // Build folder tree
   const folders = buildFolderTree(articles, rawFolders);
@@ -161,13 +186,13 @@ function processRespEngr() {
   
   // Build output data
   const outputData = {
-    ouchieImages,
+    owchieImages,
     articles,
     folders,
     meta: {
       generated: new Date().toISOString(),
       totalArticles: articles.length,
-      totalImages: ouchieImages.length,
+      totalImages: owchieImages.length,
       totalFolders: folders.length,
       vaultPath: CONFIG.vaultDir
     }
@@ -182,14 +207,14 @@ function processRespEngr() {
   );
   
   console.log(`✅ Generated: ${CONFIG.outputFile}`);
-  console.log(`📊 Stats: ${articles.length} articles, ${ouchieImages.length} images, ${folders.length} folders`);
+  console.log(`📊 Stats: ${articles.length} articles, ${owchieImages.length} images, ${folders.length} folders`);
   
   // Log pairing results
-  const pairedCount = ouchieImages.filter(img => img.pairedArticleId).length;
+  const pairedCount = owchieImages.filter(img => img.pairedArticleId).length;
   console.log(`🔗 Paired ${pairedCount} images with articles`);
   
   // Log orphan images (for randomization pool)
-  const orphanCount = ouchieImages.length - pairedCount;
+  const orphanCount = owchieImages.length - pairedCount;
   if (orphanCount > 0) {
     console.log(`🎨 ${orphanCount} orphan images available for randomization`);
   }
@@ -202,10 +227,10 @@ function watchDirectory() {
   // Watch vault root recursively
   fs.watch(CONFIG.vaultDir, { recursive: true }, (eventType, filename) => {
     if (filename) {
-      // Ignore .obsidian and ouchie changes (unless it's an image)
+      // Ignore .obsidian and owchie changes (unless it's an image)
       const shouldIgnore = CONFIG.ignorePatterns.some(pattern => {
-        if (pattern === 'ouchie' && /\.(jpg|jpeg|png|gif|webp)$/i.test(filename)) {
-          return false; // Don't ignore ouchie image changes
+        if (pattern === 'owchie' && /\.(jpg|jpeg|png|gif|webp)$/i.test(filename)) {
+          return false; // Don't ignore owchie image changes
         }
         return filename.startsWith(pattern);
       });

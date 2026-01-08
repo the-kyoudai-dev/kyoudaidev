@@ -91,7 +91,7 @@ export default function HomePage() {
             <li className="border border-[var(--design-vibrant2)] p-4 bg-[var(--design-vibrant2)]/5">
               <h3 className="mb-1 font-bold text-[var(--design-vibrant2)]">👁️ RespEngr</h3>
               <p className="text-[var(--base-white)] mb-2">
-                Response Engineering workspace. Real-time research from the vault with Ouchie Eye visualization.
+                Response Engineering workspace. Real-time research from the vault with Owchie Eye visualization.
               </p>
               <a href="/respengr" className="text-[var(--design-vibrant2)] hover:text-[var(--design-vibrant1)] text-xs">
                 → Enter workspace
