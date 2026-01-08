@@ -22,6 +22,9 @@ export default function HomePage() {
             <a href="/projects" className="hover:text-[var(--design-vibrant1)]">
               Projects
             </a>
+            <a href="/prappt/" className="hover:text-[var(--design-vibrant1)]">
+              PrAPPt
+            </a>
             <a href="/respengr" className="hover:text-[var(--design-vibrant1)] text-[var(--design-vibrant2)]">
               👁️ RespEngr
             </a>
@@ -56,6 +59,12 @@ export default function HomePage() {
               className="px-6 py-3 bg-[var(--design-vibrant2)] text-[var(--base-black)] font-bold text-sm hover:bg-[var(--design-vibrant1)] transition-colors"
             >
               👁️ Enter RespEngr
+            </a>
+            <a
+              href="/prappt/"
+              className="px-6 py-3 border border-[var(--design-vibrant2)] text-[var(--design-vibrant2)] text-sm hover:bg-[var(--design-vibrant2)]/10 transition-colors"
+            >
+              Enter PrAPPt
             </a>
             <a
               href="/projects"
@@ -95,6 +104,15 @@ export default function HomePage() {
               </p>
               <a href="/respengr" className="text-[var(--design-vibrant2)] hover:text-[var(--design-vibrant1)] text-xs">
                 → Enter workspace
+              </a>
+            </li>
+            <li className="border border-[var(--design-vibrant2)] p-4 bg-[var(--design-vibrant2)]/5">
+              <h3 className="mb-1 font-bold text-[var(--design-vibrant2)]">PrAPPt Framework</h3>
+              <p className="text-[var(--base-white)] mb-2">
+                Prompt Architecture Pattern Portal. Interactive curriculum for mastering AiBou design patterns.
+              </p>
+              <a href="/prappt/" className="text-[var(--design-vibrant2)] hover:text-[var(--design-vibrant1)] text-xs">
+                → Enter portal
               </a>
             </li>
             <li className="border border-[var(--border-color-default)] p-4">
