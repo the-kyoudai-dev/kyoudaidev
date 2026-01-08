@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async rewrites() {
+    return {
+      beforeFiles: [
+        { source: "/prappt", destination: "/prappt/index.html" },
+        { source: "/prappt/", destination: "/prappt/index.html" },
+      ],
+    };
+  },
 };
 
 export default nextConfig;
