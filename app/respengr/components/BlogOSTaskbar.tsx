@@ -9,10 +9,11 @@ interface TaskbarProps {
   onNavigateForward: () => void;
   canGoBack: boolean;
   canGoForward: boolean;
+  showNavigation: boolean; // NEW: show buttons when history exists
   viewMode: 'desktop' | 'filetree';
   onViewModeChange: (mode: 'desktop' | 'filetree') => void;
   accentColor: string;
-  clickCount: number; // NEW
+  clickCount: number;
 }
 
 export default function BlogOSTaskbar({
@@ -22,6 +23,7 @@ export default function BlogOSTaskbar({
   onNavigateForward,
   canGoBack,
   canGoForward,
+  showNavigation,
   viewMode,
   onViewModeChange,
   accentColor,
@@ -71,7 +73,7 @@ export default function BlogOSTaskbar({
     showPerceptionBubble();
   }, []);
 
-  const handleOuchieClick = () => {
+  const handleOwchieClick = () => {
     onToggleRandomize();
   };
 
@@ -83,58 +85,62 @@ export default function BlogOSTaskbar({
         borderColor: accentColor
       }}
     >
-      {/* Left: Ouchie Eye with speech bubble */}
-      <div className="relative">
-        <button
-          onClick={handleOuchieClick}
-          className="text-6xl hover:scale-110 transition-transform cursor-pointer relative"
-          title="Toggle Ouchie Eye Randomizer"
+      {/* Left: Navigation + Owchie Eye */}
+      <div className="flex items-center gap-3">
+        {/* Hidden navigation buttons - appear when history exists */}
+        <div 
+          className={`flex gap-2 transition-all duration-300 ${
+            showNavigation ? 'opacity-0 hover:opacity-100 w-24' : 'opacity-0 w-0 overflow-hidden'
+          }`}
         >
-          {isBlinking ? '😑' : '👁️'}
-        </button>
-        
-        {message && (
-          <div 
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-2 rounded-lg font-mono text-sm whitespace-nowrap animate-bounce"
-            style={{
-              backgroundColor: accentColor,
-              color: '#000',
-              fontWeight: 'bold'
-            }}
+          <button
+            onClick={onNavigateBack}
+            disabled={!canGoBack}
+            className="text-2xl disabled:cursor-not-allowed transition-colors"
+            style={{ color: canGoBack ? accentColor : '#666' }}
           >
-            {message}
-            <div 
-              className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
-              style={{
-                borderLeft: '8px solid transparent',
-                borderRight: '8px solid transparent',
-                borderTop: `8px solid ${accentColor}`
-              }}
-            />
-          </div>
-        )}
-      </div>
+            ◀
+          </button>
+          <button
+            onClick={onNavigateForward}
+            disabled={!canGoForward}
+            className="text-2xl disabled:cursor-not-allowed transition-colors"
+            style={{ color: canGoForward ? accentColor : '#666' }}
+          >
+            ▶
+          </button>
+        </div>
 
-      {/* Center: Hidden navigation */}
-      <div className="flex gap-2">
-        <button
-          onClick={onNavigateBack}
-          disabled={!canGoBack}
-          className="opacity-0 hover:opacity-100 transition-opacity text-2xl disabled:cursor-not-allowed"
-          style={{ color: canGoBack ? accentColor : '#666' }}
-          title="Previous background"
-        >
-          ◀
-        </button>
-        <button
-          onClick={onNavigateForward}
-          disabled={!canGoForward}
-          className="opacity-0 hover:opacity-100 transition-opacity text-2xl disabled:cursor-not-allowed"
-          style={{ color: canGoForward ? accentColor : '#666' }}
-          title="Next background"
-        >
-          ▶
-        </button>
+        {/* Owchie Eye - pushed right when buttons appear */}
+        <div className="relative">
+          <button
+            onClick={handleOwchieClick}
+            className="text-6xl hover:scale-110 transition-transform cursor-pointer relative"
+          >
+            {isBlinking ? '😑' : '👁️'}
+          </button>
+          
+          {message && (
+            <div 
+              className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-2 rounded-lg font-mono text-sm whitespace-nowrap animate-bounce"
+              style={{
+                backgroundColor: accentColor,
+                color: '#000',
+                fontWeight: 'bold'
+              }}
+            >
+              {message}
+              <div 
+                className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+                style={{
+                  borderLeft: '8px solid transparent',
+                  borderRight: '8px solid transparent',
+                  borderTop: `8px solid ${accentColor}`
+                }}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Right: View toggles */}

@@ -1,6 +1,6 @@
 // lib/respengr-data.ts - Updated to read from generated JSON
 
-export interface OuchieImage {
+export interface OwchieImage {
   id: string;
   filename: string;
   path: string;
@@ -12,6 +12,7 @@ export interface Article {
   filename: string;
   title: string;
   content: string;
+  htmlContent?: string; // Pre-processed HTML from osCatcher
   created: string;
   modified: string;
   author?: string;
@@ -29,7 +30,7 @@ export interface Folder {
 }
 
 interface RespEngrData {
-  ouchieImages: OuchieImage[];
+  owchieImages: OwchieImage[];
   articles: Article[];
   folders: Folder[];
   meta?: {
@@ -42,7 +43,7 @@ interface RespEngrData {
 
 // Fallback data for development
 const fallbackData: RespEngrData = {
-  ouchieImages: [],
+  owchieImages: [],
   articles: [],
   folders: [],
   meta: {
